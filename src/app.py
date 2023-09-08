@@ -17,11 +17,10 @@ def get_answer(questio_text):
     loader = TextLoader("previous_text.txt")
     index = VectorstoreIndexCreator().from_loaders([loader])
 
-    # 2. Ask a question
-    topic = "how is Kanye West music?"
+    additional_text = " Using the writing style of the previous text. And use the context around the paper. Write like me."
 
     # use ChatOpenAI to get the answer if it is not within the document
-    ans = index.query(questio_text, llm = ChatOpenAI())
+    ans = index.query(questio_text + additional_text, llm = ChatOpenAI())
 
     return ans
 
@@ -35,21 +34,20 @@ def main():
     # a sliding window of 5 text box that i can click right or left to switch between them
     # each of them is a text box
 
-    text1 = st.text_area("A parapgraph of text you wrote")
+    # text box for the previous text with the maximum of 5000 characters
+    text1 = st.text_area("An articile/homework you wrote. (Preferrable a paper similar to the one you want to write)", max_chars=5000)
 
-    text2 = st.text_area("Another parapgraph of text you wrote")
-
-    text3 = st.text_area("Final parapgraph of text you wrote")
+    # text box for the context text regarding your paper (can list as bullet points)
+    context_text = st.text_area("Context of your paper (can list as bullet points)", max_chars=1000)
 
     # text box for the question
     question = st.text_area("What is the question you want to answer?")
 
-    if text1 and text2 and text3 and question:
+    if text1 and context_text and question:
         # Write the text1, text2, text3 to a txt file named "previous_text.txt" seperated by a new line
         with open("previous_text.txt", "w") as f:
-            f.write(text1 + "\n")
-            f.write(text2 + "\n")
-            f.write(text3 + "\n")
+            f.write(" previous text" + text1 + "\n")
+            f.write(" the context aroudn the paper to be written " + context_text + "\n")
         
         # load the text file and vectorize it
         answer_txt = get_answer(question)
