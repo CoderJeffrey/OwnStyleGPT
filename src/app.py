@@ -12,7 +12,7 @@ os.environ['OPENAI_API_KEY'] = constants.OPENAI_API_KEY
 print(os.environ['OPENAI_API_KEY'])
 
 
-# 1. Load the document
+# 1. Load the document and vectorize it
 def get_answer(questio_text):
     loader = TextLoader("previous_text.txt")
     index = VectorstoreIndexCreator().from_loaders([loader])
