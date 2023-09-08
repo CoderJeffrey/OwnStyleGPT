@@ -8,8 +8,7 @@ from langchain.indexes import VectorstoreIndexCreator
 
 from langchain.chat_models import ChatOpenAI
 
-os.environ['OPENAI_API_KEY'] = constants.OPENAI_API_KEY
-print(os.environ['OPENAI_API_KEY'])
+# os.environ['OPENAI_API_KEY'] = constants.OPENAI_API_KEY
 
 
 # 1. Load the document and vectorize it
@@ -34,6 +33,15 @@ def main():
     # a sliding window of 5 text box that i can click right or left to switch between them
     # each of them is a text box
 
+    # a small textbox that ask for the OpenAI API key from the user
+    openai_api_key = st.text_input("OpenAI API Key")
+
+    if openai_api_key:
+        os.environ['OPENAI_API_KEY'] = openai_api_key
+
+     # a small textbox that ask for the Undetectable AI API key from the user (optional)
+    undetectable_ai_api_key = st.text_input("Undetectable AI API Key (optional)")
+
     # text box for the previous text with the maximum of 5000 characters
     text1 = st.text_area("An articile/homework you wrote. (Preferrable a paper similar to the one you want to write)", max_chars=5000)
 
@@ -43,7 +51,7 @@ def main():
     # text box for the question
     question = st.text_area("What is the question you want to answer?")
 
-    if text1 and context_text and question:
+    if openai_api_key and text1 and context_text and question:
         # Write the text1, text2, text3 to a txt file named "previous_text.txt" seperated by a new line
         with open("previous_text.txt", "w") as f:
             f.write(" previous text" + text1 + "\n")
